@@ -20,10 +20,13 @@
 }
 
 /* ---- 3D "reveal" page-push (MENU) ---- */
-/* Smoothly animate the page container tilting back into perspective. */
-.sr-offcanvas-container {
-  transition: -webkit-transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+/* Smoothly animate the transformed wrapper both ways (open push + close reverse).
+   The wrapper is .sr-offcanvas-container (SingleFile pages) or #pusher (product
+   pages); .s2s-3d-wrap is added by the script to whichever one is used. */
+.s2s-3d-wrap {
+  transition: -webkit-transform 550ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 550ms ease;
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 550ms ease;
   will-change: transform;
   backface-visibility: hidden;
 }
@@ -35,4 +38,42 @@ html.s2s-3d-open body {
 /* In 3D mode the page stays bright — no dark dim over it. */
 html.s2s-3d-open .s2s-oc-backdrop {
   display: none;
+}
+
+/* ---- Off-canvas MENU panel: natural vertical flow (logo / nav / follow) ---- */
+/* The theme's JS assigns fixed heights across the panel's nested Elementor boxes;
+   without it the two-line "S2S Listeners…" row overflows a fixed-height <ul> and
+   the FOLLOW US row overlaps the nav. Let every level size to its content so the
+   panel simply stacks and scrolls, matching the original. */
+.sr-offcanvas-content .sr-offcanvas-body,
+.sr-offcanvas-content .elementor,
+.sr-offcanvas-content .elementor-section,
+.sr-offcanvas-content .elementor-container,
+.sr-offcanvas-content .elementor-column,
+.sr-offcanvas-content .elementor-widget-wrap,
+.sr-offcanvas-content .elementor-widget,
+.sr-offcanvas-content .elementor-widget-container,
+.sr-offcanvas-content nav.sr-e-menu,
+.sr-offcanvas-content .sr-e-menu {
+  height: auto !important;
+  min-height: 0 !important;
+}
+/* Force the vertical nav list to a top-aligned column so its items stack inside
+   its box (the theme leaves a fixed height that pushes them out onto FOLLOW US). */
+.sr-offcanvas-content nav.sr-e-menu > ul,
+.sr-offcanvas-content .sr-e-menu > ul {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: none !important;
+}
+.sr-offcanvas-content .sr-e-menu .menu-item {
+  transform: none !important;
+}
+.sr-offcanvas-content .sr-e-menu.sr-menu--vertical .menu-item > a,
+.sr-offcanvas-content .sr-e-menu--vertical .menu-item > a {
+  line-height: 1.18 !important;
 }

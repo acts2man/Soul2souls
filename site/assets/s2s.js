@@ -55,13 +55,14 @@
     if (is3d && wrap) {
       var originY = window.scrollY + window.innerHeight / 2;
       document.documentElement.classList.add("s2s-3d-open");
+      wrap.classList.add("s2s-3d-wrap");
       wrap.style.transformOrigin = "50% " + originY + "px";
       // force reflow so the transition runs from the untransformed state
       void wrap.offsetWidth;
       wrap.style.transform =
-        "perspective(1500px) translateX(-3%) rotateY(24deg) scale(0.72)";
+        "perspective(1500px) translateX(-2%) rotateY(34deg) scale(0.52)";
       wrap.style.webkitTransform = wrap.style.transform;
-      wrap.style.boxShadow = "0 40px 90px rgba(0,0,0,0.45)";
+      wrap.style.boxShadow = "0 50px 110px rgba(0,0,0,0.5)";
     }
 
     // The theme starts each menu item at opacity:0 and animates it in via JS.
@@ -73,29 +74,82 @@
       li.style.transform = "none";
     });
 
+    // The captured panel leaves a fixed height on the nav that lets the last items
+    // paint below their box and overlap the FOLLOW US row. Measure the real last
+    // item and push the social row clear of it. (Robust against that layout quirk.)
+    fixSocialClearance(content);
+
     document.body.style.overflow = "hidden";
     openContent = content;
   }
 
-  function closePanel() {
-    if (openContent) {
-      openContent.classList.remove("sr-offcanvas-content-visible", "s2s-oc-open");
-      openContent.style.transform = "";
-      openContent.style.webkitTransform = "";
-      openContent.style.opacity = "";
-      openContent.querySelectorAll(".menu-item").forEach(function (li) {
-        li.style.transition = "";
-        li.style.opacity = "";
-        li.style.transform = "";
+  function socialSection(content) {
+    // The innermost block that holds FOLLOW US + social links but NOT the nav.
+    var cands = content.querySelectorAll(
+      ".elementor-inner-section, .elementor-section, .elementor-widget, .elementor-column"
+    );
+    var best = null;
+    cands.forEach(function (s) {
+      if (
+        /FOLLOW\s*US/i.test(s.textContent) &&
+        s.querySelector("a") &&
+        !s.querySelector(".menu-item")
+      ) {
+        if (!best || s.getBoundingClientRect().height < best.getBoundingClientRect().height) best = s;
+      }
+    });
+    return best;
+  }
+
+  function fixSocialClearance(content) {
+    var run = function () {
+      var items = content.querySelectorAll(".menu-item");
+      var social = socialSection(content);
+      if (!items.length || !social) return;
+      var lastBottom = 0;
+      items.forEach(function (li) {
+        lastBottom = Math.max(lastBottom, li.getBoundingClientRect().bottom);
       });
-      openContent = null;
-    }
+      social.style.marginTop = ""; // reset before measuring
+      var top = social.getBoundingClientRect().top;
+      if (top < lastBottom + 10) {
+        social.style.setProperty("margin-top", lastBottom - top + 40 + "px", "important");
+      }
+    };
+    window.setTimeout(run, 80);
+  }
+
+  function closePanel() {
+    // Nothing open -> nothing to reverse. (openPanel calls closePanel() first;
+    // without this guard it would schedule a timer that wipes the transform-origin
+    // of the panel that's about to open, pushing the page off-screen.)
+    if (!openContent) return;
+
+    openContent.classList.remove("sr-offcanvas-content-visible", "s2s-oc-open");
+    openContent.style.transform = "";
+    openContent.style.webkitTransform = "";
+    openContent.style.opacity = "";
+    openContent.querySelectorAll(".menu-item").forEach(function (li) {
+      li.style.transition = "";
+      li.style.opacity = "";
+      li.style.transform = "";
+    });
+    var soc = socialSection(openContent);
+    if (soc) soc.style.marginTop = "";
+    openContent = null;
+
     var wrap = pageWrap();
     if (wrap) {
+      // Clearing the transform lets it animate back to normal (reverse push),
+      // then drop the transition class once the animation has finished.
       wrap.style.transform = "";
       wrap.style.webkitTransform = "";
-      wrap.style.transformOrigin = "";
       wrap.style.boxShadow = "";
+      var w = wrap;
+      window.setTimeout(function () {
+        w.style.transformOrigin = "";
+        w.classList.remove("s2s-3d-wrap");
+      }, 650);
     }
     var b = document.querySelector(".s2s-oc-backdrop");
     if (b) b.classList.remove("is-visible");
