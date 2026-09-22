@@ -70,6 +70,19 @@ function copyDir(from, to) {
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
+// The captured Mixcloud players (frames/N/) get blocked by content filters and
+// don't play. Swap them for the live Mixcloud embeds pulled from the origin
+// podcasts page (same mixes, same order), so the players work.
+const PODCAST_EMBEDS = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "mixcloud_embeds.json"), "utf8")
+);
+function swapPodcastEmbeds(html) {
+  return html.replace(/src=("?)frames\/(\d+)\/index\.html\1/g, (m, _q, n) => {
+    const u = PODCAST_EMBEDS[Number(n)];
+    return u ? 'src="' + u + '"' : m;
+  });
+}
+
 for (const [srcName, route] of Object.entries(PAGES)) {
   const srcDir = path.join(SRC, srcName);
   const outDir = route ? path.join(OUT, route) : OUT;
@@ -83,7 +96,8 @@ for (const [srcName, route] of Object.entries(PAGES)) {
     else fs.copyFileSync(s, d);
   }
   // rewrite + write html
-  const html = rewrite(fs.readFileSync(path.join(srcDir, "index.html"), "utf8"));
+  let html = rewrite(fs.readFileSync(path.join(srcDir, "index.html"), "utf8"));
+  if (srcName === "Podcasts") html = swapPodcastEmbeds(html);
   fs.writeFileSync(path.join(outDir, "index.html"), html);
   console.log(`${srcName} -> /${route}  (${(html.length / 1024).toFixed(0)}kb)`);
 }
