@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+
+# build output
+dist
+dist-ssr
+
+# source exports / original captured assets (never commit)
+*.zip
+exports/
+
+# QA screenshots
+qa/**/*.png
+
+# media (never commit per CLAUDE.md Rule 1)
+*.mp3
+*.m4a
+*.wav
+*.mov
+*.mp4
+
+# logs / editor
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# tsc build artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts

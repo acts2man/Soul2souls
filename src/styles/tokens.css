@@ -1,0 +1,67 @@
+/* Design tokens — measured from soul2soulsjazz.com (Elementor jazz theme). */
+:root {
+  /* Brand purples */
+  --purple-900: #3d0f5e;
+  --purple-800: #4c1a76;
+  --purple-700: #61248d; /* primary brand purple */
+  --purple-600: #720eec; /* bright accent purple */
+  --purple-500: #8a3fc4;
+  --purple-300: #b5abc2;
+
+  /* Lavender / pink surfaces */
+  --lav-100: #f3eef8;
+  --lav-200: #e9e6ed;
+  --lav-300: #dfd9df;
+  --pink-200: #f4d9ec;
+  --pink-300: #e9a7d4;
+
+  /* Accents */
+  --gold: #ffba00;
+  --gold-deep: #e59e00;
+  --coral: #ff7a59;
+
+  /* Neutrals */
+  --ink: #19191b;
+  --ink-soft: #323437;
+  --muted: #7e828a;
+  --cream: #fcfbfe;
+  --white: #ffffff;
+
+  /* Semantic */
+  --bg: #efe8f4;
+  --bg-grad: linear-gradient(180deg, #f3ecf8 0%, #ead9ef 45%, #f6e6f0 100%);
+  --hero-grad: linear-gradient(135deg, #7b3fb0 0%, #b06fce 40%, #e79fc6 75%, #f5c9a8 100%);
+  --header-grad: linear-gradient(90deg, #5a1f86 0%, #7a2ca0 50%, #9b3fb0 100%);
+  --player-grad: linear-gradient(90deg, #4c1a76 0%, #6a2192 55%, #8a2fae 100%);
+  --text: var(--ink);
+  --text-invert: var(--cream);
+
+  /* Type */
+  --font-display: "Josefin Sans", "Quicksand", system-ui, sans-serif;
+  --font-body: "Quicksand", system-ui, sans-serif;
+  --font-alt: "Abel", "Quicksand", sans-serif;
+
+  /* Layout */
+  --container: 1200px;
+  --container-wide: 1400px;
+  --radius: 14px;
+  --radius-lg: 24px;
+  --player-h: 78px;
+
+  /* Elevation */
+  --shadow-sm: 0 4px 14px rgba(61, 15, 94, 0.12);
+  --shadow-md: 0 12px 40px rgba(61, 15, 94, 0.18);
+  --shadow-lg: 0 24px 60px rgba(61, 15, 94, 0.28);
+
+  /* Z layers */
+  --z-topbar: 40;
+  --z-header: 50;
+  --z-player: 60;
+  --z-overlay: 80;
+  --z-panel: 90;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Breakpoints (reference): 480 / 768 / 1024 / 1200 */
