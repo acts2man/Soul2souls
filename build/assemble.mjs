@@ -39,7 +39,7 @@ function rewrite(html) {
   // Convert ALL internal origin links (quoted or unquoted) to local paths, but
   // leave asset/API URLs on the origin (wp-content images, wp-json, feed, xmlrpc).
   html = html.replace(
-    /https:\/\/soul2soulsjazz\.com\/(?!wp-content|wp-json|xmlrpc|feed)/g,
+    /https?:\/\/(?:www\.)?soul2soulsjazz\.com\/(?!wp-content|wp-json|xmlrpc|feed|wp-includes)/g,
     "/"
   );
   // Legacy permalink -> canonical about.
