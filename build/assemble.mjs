@@ -44,6 +44,8 @@ function rewrite(html) {
   );
   // Legacy permalink -> canonical about.
   html = html.split("/about-example-1/").join("/about/");
+  // Normalize non-breaking-hyphen product slugs to plain hyphen (local routes).
+  html = html.split("%e2%80%91").join("-").split("%E2%80%91").join("-");
   void LINK_MAP;
   // Inject behaviour script + overrides before </body>.
   const inject =
@@ -91,4 +93,8 @@ const ASSETS_SRC = path.join(ROOT, "_assets_src");
 copyDir(ASSETS_SRC, path.join(OUT, "assets"));
 console.log("assets copied");
 
-console.log("assembled at", OUT);
+// Generate the single-product pages (/product/<slug>/).
+import("./products.mjs").then((m) => {
+  m.buildProducts();
+  console.log("assembled at", OUT);
+});

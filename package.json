@@ -1,0 +1,16 @@
+{
+  "name": "soul2souls",
+  "version": "1.0.0",
+  "description": "A faithful, exact reproduction of [soul2soulsjazz.com](https://soul2soulsjazz.com) — the jazz musical podcast of **JazzAmp aka DJ Perry** (Sonaar/StreamKing WordPress + Elementor theme).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}

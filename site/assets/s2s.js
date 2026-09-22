@@ -29,7 +29,13 @@
   }
 
   function pageWrap() {
-    return document.querySelector(".sr-offcanvas-container");
+    // SingleFile pages have .sr-offcanvas-container; the raw product pages (server
+    // HTML, before the theme JS wraps the page) expose #pusher-wrap / #pusher.
+    return (
+      document.querySelector(".sr-offcanvas-container") ||
+      document.querySelector("#pusher-wrap") ||
+      document.querySelector("#pusher")
+    );
   }
 
   function openPanel(content) {

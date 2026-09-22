@@ -1,0 +1,21 @@
+/* Product pages: show the WooCommerce gallery without the theme's slider JS. */
+.woocommerce-product-gallery {
+  opacity: 1 !important;
+}
+.woocommerce-product-gallery__wrapper {
+  transform: none !important;
+}
+.woocommerce-product-gallery__image {
+  display: block;
+}
+/* The slider would show one slide at a time; show the first image. */
+.woocommerce-product-gallery__image:not(:first-child) {
+  display: none;
+}
+.flex-viewport {
+  height: auto !important;
+}
+/* Flexslider thumbnail nav needs JS; hide it so it doesn't stack oddly. */
+.flex-control-thumbs {
+  display: none;
+}
