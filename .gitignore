@@ -1,32 +1,15 @@
-# dependencies
-node_modules
-
-# build output
-dist
-dist-ssr
-
-# source exports / original captured assets (never commit)
+# Source captures — SingleFile exports (large; the built site/ is what deploys)
 *.zip
 exports/
 
-# QA screenshots
-qa/**/*.png
+# tooling
+node_modules
+.vite
+dist
 
-# media (never commit per CLAUDE.md Rule 1)
-*.mp3
-*.m4a
-*.wav
-*.mov
-*.mp4
-
-# logs / editor
+# editor / os
 *.log
 .DS_Store
+.idea
 .vscode/*
 !.vscode/extensions.json
-.idea
-
-# tsc build artifacts
-*.tsbuildinfo
-vite.config.js
-vite.config.d.ts

@@ -1,58 +1,67 @@
-# Soul2SoulsJazz — Website Reconstruction
+# Soul2SoulsJazz — Exact Site Reproduction
 
-A faithful React rebuild of [soul2soulsjazz.com](https://soul2soulsjazz.com) — the jazz musical
-podcast of **JazzAmp aka DJ Perry**. Purple/gold jazz theme with an animated announcement marquee,
-watermark header, off-canvas menu, slide-in subscribe panel, scroll-reveal animations, and a
-signature sticky audio player.
+A faithful, exact reproduction of [soul2soulsjazz.com](https://soul2soulsjazz.com) — the jazz
+musical podcast of **JazzAmp aka DJ Perry** (Sonaar/StreamKing WordPress + Elementor theme).
 
-## Stack
+This is **not** a redesign. Each page preserves the original page's real HTML, all of its original
+CSS, and its images/fonts — captured with SingleFile. The only things added on top are:
 
-- **React 18 + TypeScript + Vite**
-- **CSS Modules** + a global design-token file (`src/styles/tokens.css`)
-- **React Router** (client-side routing, trailing-slash + legacy-permalink handling)
-- Google Fonts: Quicksand, Josefin Sans, Abel
-- Deploys to **Netlify** (SPA fallback + redirects in `netlify.toml`)
+- internal navigation links rewired to stay on-site (originals pointed at the live domain), and
+- the JavaScript the theme needs for its off-canvas **MENU** / **SUBSCRIBE** panels and the sticky
+  audio player (the SingleFile captures ship no JS).
 
-## Routes
+## Pages (all 8 nav routes)
 
-| Route        | Page                                            |
-| ------------ | ----------------------------------------------- |
-| `/`          | Home — hero, go-live, about-the-show, chart, featured mix, mission, movement, sponsor CTA |
-| `/about`     | About — story, mission, Meet JazzAmp bio, CTA   |
-| `/podcasts`  | Podcasts — Mixcloud mix grid                    |
-| `/shop`      | Shop — 16-product merch catalog ("Coming Soon!")|
-| `/contact`   | Contact — form + booking info                   |
-| `*`          | 404                                             |
+| Route                 | Page                          |
+| --------------------- | ----------------------------- |
+| `/`                   | Home                          |
+| `/about/`             | About                         |
+| `/podcasts/`          | Podcasts                      |
+| `/gallery-fullwidth/` | S2S Gallery                   |
+| `/events/`            | Events                        |
+| `/shop/`              | Shop                          |
+| `/presskit/`          | Presskit                      |
+| `/contact/`           | Contact                       |
 
-Nav items **S2S Gallery**, **Events**, and **Presskit** were not part of the supplied export set,
-so they link out to the live origin (`soul2soulsjazz.com/...`) rather than being reconstructed.
+`/about-example-1/` → `/about/` (legacy permalink redirect, in `netlify.toml`).
 
-## Develop
+## Layout
 
-```bash
-npm install
-npm run dev      # http://localhost:5188
-npm run build    # type-check + production build -> dist/
-npm run preview
+```
+site/            <- the deployable, pre-built exact site (this is what Netlify publishes)
+  index.html               (Home) + its images/ fonts/ stylesheet_*.css
+  about/  podcasts/  shop/  contact/  gallery-fullwidth/  events/  presskit/
+  assets/  s2s.js  s2s-overrides.css   (re-added interactivity — the only new code)
+exports/         <- the raw SingleFile captures (git-ignored source; unzip the 8 zips here)
+_assets_src/     <- source for the re-added JS/CSS (copied into site/assets on build)
+build/assemble.mjs   <- assembles site/ from exports/ + _assets_src/
+netlify.toml     <- publishes site/
 ```
 
-## Notes / deviations
+## Deploy
 
-- **Media stays on origin.** No audio/video is downloaded (per project rules). The sticky player's
-  intro track is routed through `src/data/mediaSrc.ts` (`INTRO_TRACK`) and points at the origin —
-  swap to the real asset URL at cutover. The player UI (play/pause/seek/volume/repeat) is fully
-  functional against whatever source is set.
-- **Mixcloud mixes refreshed.** The mix slugs captured in the Sept-2025 export now 404 on Mixcloud
-  (the account rotates uploads). `src/data/podcasts.ts` uses the **current** live cloudcasts from
-  `mixcloud.com/S2SJazz25` so the embeds actually play. Update that list as the account grows.
-- **Forms are real, not faked.** Contact and newsletter forms post to **Netlify Forms** (field names
-  match the original) with real submitting / success / error states. Static detection stubs live in
-  `index.html`.
-- **Shop** shows a "Coming Soon!" catalog matching the live site; "Add to cart" flips to a
-  "Notify me" state rather than faking a checkout (no live cart exists yet).
-- Images are copied locally to `public/img/`. Original source zips are git-ignored.
+`site/` is already built and committed, so Netlify needs no build step — it just publishes `site/`.
+Drag-and-drop `site/` into Netlify, or connect the repo (publish dir = `site`).
 
-## Assets
+## Rebuild (only if you re-export pages)
 
-Product, hero, and portrait images were extracted from the site exports into `public/img/`.
-The Soul2Souls logo is `public/img/shared/logo.webp`.
+1. Re-export a page from the live site with the SingleFile browser extension (Save Page → zip).
+2. Unzip it into `exports/<Name>/` (matching the folder names in `build/assemble.mjs`).
+3. Run:
+
+```bash
+node build/assemble.mjs
+```
+
+It re-copies each page's HTML/CSS/assets into `site/`, rewrites internal links, and injects the
+behaviour script.
+
+## Known limitations (honest notes)
+
+- **Audio player:** the exact *visual* is preserved and play/pause is wired, but the original theme's
+  full playlist/streaming behaviour depends on the Sonaar plugin's own scripts, which the static
+  captures don't include.
+- **Forms:** the Contact and newsletter forms are the original markup. Point them at a real handler
+  (e.g. Netlify Forms or the site's Contact Form 7 endpoint) before going live.
+- **A few images** load from the origin CDN (`soul2soulsjazz.com/wp-content/...`) because SingleFile
+  didn't localize them; they render fine as long as the origin stays up.

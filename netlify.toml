@@ -1,17 +1,16 @@
-# Netlify configuration — SPA fallback + redirects discovered from the original site.
+# Netlify — serves the pre-built exact reproduction in site/ (no build step).
 [build]
-  command = "npm run build"
-  publish = "dist"
+  publish = "site"
 
-# Original WordPress permalinks used trailing slashes; keep them working.
+# Legacy WordPress permalink used on the original site.
 [[redirects]]
   from = "/about-example-1/"
   to = "/about/"
   status = 301
   force = true
 
-# SPA fallback — every unknown route renders index.html so React Router handles it.
+# Nice-to-have: /home -> /
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "/home"
+  to = "/"
+  status = 301
