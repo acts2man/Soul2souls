@@ -14,6 +14,25 @@
   visibility: visible;
 }
 
+/* An opened off-canvas panel sits above everything. */
 .sr-offcanvas-content.s2s-oc-open {
   z-index: 100002 !important;
+}
+
+/* ---- 3D "reveal" page-push (MENU) ---- */
+/* Smoothly animate the page container tilting back into perspective. */
+.sr-offcanvas-container {
+  transition: -webkit-transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+/* Solid brand purple revealed behind the tilted page (matches the original). */
+html.s2s-3d-open,
+html.s2s-3d-open body {
+  background: #7a1fb0 !important;
+}
+/* In 3D mode the page stays bright — no dark dim over it. */
+html.s2s-3d-open .s2s-oc-backdrop {
+  display: none;
 }

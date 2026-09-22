@@ -28,15 +28,45 @@
     return b;
   }
 
+  function pageWrap() {
+    return document.querySelector(".sr-offcanvas-container");
+  }
+
   function openPanel(content) {
     if (!content) return;
     closePanel();
+    var is3d = content.classList.contains("sr-offcanvas-3dyatch");
     content.classList.add("sr-offcanvas-content-visible", "s2s-oc-open");
     content.style.transform = "translateX(0)";
     content.style.webkitTransform = "translateX(0)";
     content.style.opacity = "1"; // base rule is opacity:0
     ensureBackdrop().classList.add("is-visible");
     document.documentElement.classList.add("sr-offcanvas-content-open");
+
+    // MENU uses the theme's 3D "reveal" push: the page tilts back in perspective
+    // while the panel slides in. SUBSCRIBE (slide) just overlays.
+    var wrap = pageWrap();
+    if (is3d && wrap) {
+      var originY = window.scrollY + window.innerHeight / 2;
+      document.documentElement.classList.add("s2s-3d-open");
+      wrap.style.transformOrigin = "50% " + originY + "px";
+      // force reflow so the transition runs from the untransformed state
+      void wrap.offsetWidth;
+      wrap.style.transform =
+        "perspective(1500px) translateX(-3%) rotateY(24deg) scale(0.72)";
+      wrap.style.webkitTransform = wrap.style.transform;
+      wrap.style.boxShadow = "0 40px 90px rgba(0,0,0,0.45)";
+    }
+
+    // The theme starts each menu item at opacity:0 and animates it in via JS.
+    // Reveal them with a staggered entrance (the "anim-enable" effect).
+    var items = content.querySelectorAll(".menu-item");
+    items.forEach(function (li, i) {
+      li.style.transition = "opacity .5s ease " + (140 + i * 70) + "ms, transform .5s ease " + (140 + i * 70) + "ms";
+      li.style.opacity = "1";
+      li.style.transform = "none";
+    });
+
     document.body.style.overflow = "hidden";
     openContent = content;
   }
@@ -47,11 +77,23 @@
       openContent.style.transform = "";
       openContent.style.webkitTransform = "";
       openContent.style.opacity = "";
+      openContent.querySelectorAll(".menu-item").forEach(function (li) {
+        li.style.transition = "";
+        li.style.opacity = "";
+        li.style.transform = "";
+      });
       openContent = null;
+    }
+    var wrap = pageWrap();
+    if (wrap) {
+      wrap.style.transform = "";
+      wrap.style.webkitTransform = "";
+      wrap.style.transformOrigin = "";
+      wrap.style.boxShadow = "";
     }
     var b = document.querySelector(".s2s-oc-backdrop");
     if (b) b.classList.remove("is-visible");
-    document.documentElement.classList.remove("sr-offcanvas-content-open");
+    document.documentElement.classList.remove("sr-offcanvas-content-open", "s2s-3d-open");
     document.body.style.overflow = "";
   }
 
