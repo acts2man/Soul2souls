@@ -194,11 +194,13 @@
       if (src) audio.src = src;
       player.appendChild(audio);
     }
+    // Play/pause — exclude the minimize handle (.close) which shares .btn-player.
     var playBtns = player.querySelectorAll(
-      ".sr_it-play-pause-button, .play-pause-button, .btn-player, .sr-player-btn--play, [class*='play']"
+      ".sr_it-play-pause-button, .play-pause-button, .sr-player-btn--play, .btn-player:not(.close)"
     );
     playBtns.forEach(function (btn) {
       btn.addEventListener("click", function (e) {
+        if (btn.closest(".close")) return;
         e.preventDefault();
         if (!audio.src) return;
         if (audio.paused) audio.play().catch(function () {});
@@ -208,11 +210,52 @@
     });
   }
 
+  // The sticky player slides up from the bottom on load and can be minimized
+  // (tucked down) via the little handle at its top-right, then restored.
+  // Inline styles are used so they win over the theme's own transform rules.
+  function initStickyPlayer() {
+    var bar = document.querySelector("#sonaar-player, .srt_sticky-player");
+    if (!bar) return;
+    // The player's `transform` is contested by the theme (the transition never
+    // settles). Animate `bottom` instead — it's a simple position the theme leaves
+    // at 0, so inline !important controls it cleanly.
+    var h = bar.offsetHeight || 90;
+    var setBottom = function (px) {
+      bar.style.setProperty("bottom", px + "px", "important");
+    };
+    bar.style.setProperty("transition", "bottom .6s cubic-bezier(.22,1,.36,1)", "important");
+    setBottom(-h); // start tucked below the viewport
+
+    var slid = false,
+      minimized = false;
+    function slideUp() {
+      if (slid || minimized) return;
+      slid = true;
+      setBottom(0);
+    }
+    window.setTimeout(slideUp, 160);
+    window.addEventListener("load", slideUp);
+    window.setTimeout(slideUp, 1400);
+
+    var handle = bar.querySelector(".close.btn-player") || bar.querySelector(".close");
+    if (handle) {
+      handle.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        slid = true;
+        minimized = !minimized;
+        setBottom(minimized ? -(h - 26) : 0);
+        bar.classList.toggle("s2s-player-min", minimized);
+      });
+    }
+  }
+
   function ready(fn) {
     if (document.readyState !== "loading") fn();
     else document.addEventListener("DOMContentLoaded", fn);
   }
   ready(function () {
     initPlayer();
+    initStickyPlayer();
   });
 })();

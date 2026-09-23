@@ -40,6 +40,21 @@ html.s2s-3d-open .s2s-oc-backdrop {
   display: none;
 }
 
+/* ---- Sticky audio player: slide up on load, minimise via the top-right handle ---- */
+/* The slide/minimise animate the `bottom` position inline (script-driven). */
+#sonaar-player .close.btn-player,
+.srt_sticky-player .close.btn-player {
+  cursor: pointer;
+}
+#sonaar-player.s2s-player-min .close.btn-player i,
+.srt_sticky-player.s2s-player-min .close.btn-player i {
+  transform: rotate(180deg);
+}
+#sonaar-player.s2s-player-min .close.btn-player i,
+.srt_sticky-player.s2s-player-min .close.btn-player i {
+  transform: rotate(180deg);
+}
+
 /* ---- Off-canvas MENU panel: natural vertical flow (logo / nav / follow) ---- */
 /* The theme's JS assigns fixed heights across the panel's nested Elementor boxes;
    without it the two-line "S2S Listeners…" row overflows a fixed-height <ul> and
